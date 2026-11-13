@@ -75,7 +75,7 @@ const showLogin=msg=>{document.getElementById('login').innerHTML=`<div class="ov
   const lb=document.getElementById('lb');
   lb.onclick=async()=>{let u=document.getElementById('lu').value.trim().toLowerCase();if(!u.includes('@'))u+='@gastro.app';
     const {error}=await sb.auth.signInWithPassword({email:u,password:document.getElementById('lp').value});
-    if(error)showLogin('Usuario o contraseña incorrectos');else start()};
+    if(error){const m=error.message||'';showLogin(m.includes('Invalid login')?'Usuario o contraseña incorrectos':m.includes('not confirmed')?'El usuario no está confirmado en Supabase (marcá Auto Confirm al crearlo)':'Error de conexión: '+m+' → revisá config.js')}else start()};
   document.getElementById('lp').onkeydown=e=>{if(e.key==='Enter')lb.click()}};
 const start=async()=>{const {data:{session}}=await sb.auth.getSession();if(!session){showLogin();return}
   uidU=session.user.id;userLabel=(session.user.email||'').replace('@gastro.app','');
